@@ -1,27 +1,34 @@
 {
-  "name": "wopr-plugin-voice-openai-tts",
-  "version": "1.0.0",
   "description": "OpenAI TTS provider for WOPR voice",
-  "type": "module",
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
   "main": "index.js",
+  "name": "wopr-plugin-voice-openai-tts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc -w"
+    "check": "biome check src/ && tsc --noEmit",
+    "dev": "tsc -w",
+    "format": "biome format --write src/",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --fix src/"
   },
-  "devDependencies": {
-    "typescript": "^5.3.0",
-    "@types/node": "^20.10.0"
-  },
+  "type": "module",
+  "version": "1.0.0",
   "wopr": {
     "plugin": {
-      "name": "voice-openai-tts",
       "category": "voice",
-      "type": "tts",
       "description": "OpenAI Text-to-Speech",
+      "name": "voice-openai-tts",
+      "primaryEnv": "OPENAI_API_KEY",
       "requires": {
-        "env": ["OPENAI_API_KEY"]
+        "env": [
+          "OPENAI_API_KEY"
+        ]
       },
-      "primaryEnv": "OPENAI_API_KEY"
+      "type": "tts"
     }
   }
 }
