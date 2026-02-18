@@ -217,6 +217,7 @@ class OpenAITTSProvider implements TTSProvider {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(body),
+			signal: AbortSignal.timeout(30000),
 		});
 
 		if (!response.ok) {
