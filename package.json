@@ -1,41 +1,43 @@
 {
-	"description": "OpenAI TTS provider for WOPR voice",
-	"devDependencies": {
-		"@biomejs/biome": "^2.3.14",
-		"@types/node": "^25.2.3",
-		"typescript": "^5.3.0"
-	},
-	"main": "index.js",
-	"name": "@wopr-network/wopr-plugin-voice-openai-tts",
-	"scripts": {
-		"build": "tsc",
-		"check": "biome check src/ && tsc --noEmit",
-		"dev": "tsc -w",
-		"format": "biome format --write src/",
-		"lint": "biome check src/",
-		"lint:fix": "biome check --fix src/",
-		"prepublishOnly": "npm run build"
-	},
-	"type": "module",
-	"version": "1.0.0",
-	"wopr": {
-		"plugin": {
-			"category": "voice",
-			"description": "OpenAI Text-to-Speech",
-			"name": "voice-openai-tts",
-			"primaryEnv": "OPENAI_API_KEY",
-			"requires": {
-				"env": [
-					"OPENAI_API_KEY"
-				]
-			},
-			"type": "tts"
-		}
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"files": [
-		"dist"
-	]
+  "description": "OpenAI TTS provider for WOPR voice",
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "@types/node": "^25.2.3",
+    "typescript": "^5.3.0",
+    "semantic-release": "^24.0.0",
+    "@wopr-network/semantic-release-config": "^1.0.0"
+  },
+  "main": "index.js",
+  "name": "@wopr-network/wopr-plugin-voice-openai-tts",
+  "scripts": {
+    "build": "tsc",
+    "check": "biome check src/ && tsc --noEmit",
+    "dev": "tsc -w",
+    "format": "biome format --write src/",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --fix src/",
+    "prepublishOnly": "npm run build"
+  },
+  "type": "module",
+  "version": "1.0.0",
+  "wopr": {
+    "plugin": {
+      "category": "voice",
+      "description": "OpenAI Text-to-Speech",
+      "name": "voice-openai-tts",
+      "primaryEnv": "OPENAI_API_KEY",
+      "requires": {
+        "env": [
+          "OPENAI_API_KEY"
+        ]
+      },
+      "type": "tts"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ]
 }
