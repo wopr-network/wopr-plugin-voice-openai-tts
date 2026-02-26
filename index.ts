@@ -333,6 +333,76 @@ class OpenAITTSProvider implements TTSProvider {
 // Plugin Export
 // =============================================================================
 
+import type { ConfigSchema } from "@wopr-network/plugin-types";
+
+const CONFIG_SCHEMA: ConfigSchema = {
+	title: "OpenAI TTS Configuration",
+	description: "Configure the OpenAI Text-to-Speech provider",
+	fields: [
+		{
+			name: "apiKey",
+			type: "password",
+			label: "OpenAI API Key",
+			description: "OpenAI API key",
+			secret: true,
+			setupFlow: "paste",
+			required: true,
+		},
+		{
+			name: "model",
+			type: "select",
+			label: "TTS Model",
+			description: "TTS model: gpt-4o-mini-tts, tts-1, tts-1-hd",
+			default: "gpt-4o-mini-tts",
+			options: [
+				{
+					value: "gpt-4o-mini-tts",
+					label: "GPT-4o Mini TTS (recommended)",
+				},
+				{ value: "tts-1", label: "TTS-1 (fast)" },
+				{ value: "tts-1-hd", label: "TTS-1 HD (high quality)" },
+			],
+		},
+		{
+			name: "voice",
+			type: "select",
+			label: "Default Voice",
+			description:
+				"Default voice (alloy, ash, ballad, coral, echo, fable, nova, onyx, sage, shimmer, verse, marin, cedar)",
+			default: "coral",
+			options: [
+				{ value: "alloy", label: "Alloy (neutral)" },
+				{ value: "ash", label: "Ash (male)" },
+				{ value: "ballad", label: "Ballad (female)" },
+				{ value: "coral", label: "Coral (female)" },
+				{ value: "echo", label: "Echo (male)" },
+				{ value: "fable", label: "Fable (neutral)" },
+				{ value: "nova", label: "Nova (female)" },
+				{ value: "onyx", label: "Onyx (male)" },
+				{ value: "sage", label: "Sage (neutral)" },
+				{ value: "shimmer", label: "Shimmer (female)" },
+				{ value: "verse", label: "Verse (neutral)" },
+				{ value: "marin", label: "Marin (female, best quality)" },
+				{ value: "cedar", label: "Cedar (male, best quality)" },
+			],
+		},
+		{
+			name: "speed",
+			type: "number",
+			label: "Speed",
+			description: "Speed multiplier (0.25 - 4.0)",
+			default: 1.0,
+		},
+		{
+			name: "instructions",
+			type: "textarea",
+			label: "Style Instructions",
+			description: "Style instructions (gpt-4o-mini-tts only)",
+			required: false,
+		},
+	],
+};
+
 let ctx: WOPRPluginContext | null = null;
 let provider: OpenAITTSProvider | null = null;
 const cleanups: Array<() => void> = [];
@@ -362,79 +432,18 @@ const plugin: WOPRPlugin = {
 				},
 			],
 		},
-		configSchema: {
-			title: "OpenAI TTS Configuration",
-			description: "Configure the OpenAI Text-to-Speech provider",
-			fields: [
-				{
-					name: "apiKey",
-					type: "password",
-					label: "OpenAI API Key",
-					description: "OpenAI API key",
-					secret: true,
-					setupFlow: "paste",
-					required: true,
-				},
-				{
-					name: "model",
-					type: "select",
-					label: "TTS Model",
-					description: "TTS model: gpt-4o-mini-tts, tts-1, tts-1-hd",
-					default: "gpt-4o-mini-tts",
-					options: [
-						{
-							value: "gpt-4o-mini-tts",
-							label: "GPT-4o Mini TTS (recommended)",
-						},
-						{ value: "tts-1", label: "TTS-1 (fast)" },
-						{ value: "tts-1-hd", label: "TTS-1 HD (high quality)" },
-					],
-				},
-				{
-					name: "voice",
-					type: "select",
-					label: "Default Voice",
-					description:
-						"Default voice (alloy, ash, ballad, coral, echo, fable, nova, onyx, sage, shimmer, verse, marin, cedar)",
-					default: "coral",
-					options: [
-						{ value: "alloy", label: "Alloy (neutral)" },
-						{ value: "ash", label: "Ash (male)" },
-						{ value: "ballad", label: "Ballad (female)" },
-						{ value: "coral", label: "Coral (female)" },
-						{ value: "echo", label: "Echo (male)" },
-						{ value: "fable", label: "Fable (neutral)" },
-						{ value: "nova", label: "Nova (female)" },
-						{ value: "onyx", label: "Onyx (male)" },
-						{ value: "sage", label: "Sage (neutral)" },
-						{ value: "shimmer", label: "Shimmer (female)" },
-						{ value: "verse", label: "Verse (neutral)" },
-						{ value: "marin", label: "Marin (female, best quality)" },
-						{ value: "cedar", label: "Cedar (male, best quality)" },
-					],
-				},
-				{
-					name: "speed",
-					type: "number",
-					label: "Speed",
-					description: "Speed multiplier (0.25 - 4.0)",
-					default: 1.0,
-				},
-				{
-					name: "instructions",
-					type: "textarea",
-					label: "Style Instructions",
-					description: "Style instructions (gpt-4o-mini-tts only)",
-					required: false,
-				},
-			],
+		lifecycle: {
+			shutdownBehavior: "graceful",
 		},
+		configSchema: CONFIG_SCHEMA,
 	},
 
 	async init(pluginCtx: WOPRPluginContext) {
 		ctx = pluginCtx;
 		const config = ctx.getConfig<OpenAITTSConfig>();
 		provider = new OpenAITTSProvider(config);
+
+		ctx.registerConfigSchema("voice-openai-tts", CONFIG_SCHEMA);
 
 		try {
 			provider.validateConfig();
@@ -448,11 +457,18 @@ const plugin: WOPRPlugin = {
 	},
 
 	async shutdown() {
-		if (ctx && provider) {
+		if (ctx) {
 			try {
-				ctx.unregisterExtension("tts");
+				ctx.unregisterConfigSchema("voice-openai-tts");
 			} catch (_error: unknown) {
 				// Already unregistered or context disposed — safe to ignore
+			}
+			if (provider) {
+				try {
+					ctx.unregisterExtension("tts");
+				} catch (_error: unknown) {
+					// Already unregistered or context disposed — safe to ignore
+				}
 			}
 		}
 		provider = null;
