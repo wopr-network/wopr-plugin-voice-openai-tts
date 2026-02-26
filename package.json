@@ -10,11 +10,11 @@
   "name": "@wopr-network/wopr-plugin-voice-openai-tts",
   "scripts": {
     "build": "tsc",
-    "check": "biome check index.ts && tsc --noEmit",
+    "check": "biome check *.ts && tsc --noEmit",
     "dev": "tsc -w",
-    "format": "biome format --write index.ts",
-    "lint": "biome check index.ts",
-    "lint:fix": "biome check --fix index.ts",
+    "format": "biome format --write *.ts",
+    "lint": "biome check *.ts",
+    "lint:fix": "biome check --fix *.ts",
     "prepublishOnly": "npm run build",
     "test": "vitest run"
   },

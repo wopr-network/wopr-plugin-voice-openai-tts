@@ -373,7 +373,7 @@ const plugin: WOPRPlugin = {
 					description: "OpenAI API key",
 					secret: true,
 					setupFlow: "paste",
-					required: false,
+					required: true,
 				},
 				{
 					name: "model",
