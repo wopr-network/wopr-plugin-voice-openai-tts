@@ -356,16 +356,19 @@ const plugin: WOPRPlugin = {
 
 	async init(ctx: WOPRPluginContext) {
 		pluginCtx = ctx;
+		// Register schema unconditionally so the config UI is shown even when the
+		// API key is missing or invalid.
+		ctx.registerConfigSchema(
+			"@wopr-network/wopr-plugin-voice-openai-tts",
+			// biome-ignore lint/style/noNonNullAssertion: configSchema is always defined in this manifest
+			manifest.configSchema!,
+		);
 		const config = ctx.getConfig<OpenAITTSConfig>();
 		provider = new OpenAITTSProvider(config);
 
 		try {
 			provider.validateConfig();
 			ctx.registerTTSProvider(provider);
-			ctx.registerConfigSchema(
-				"@wopr-network/wopr-plugin-voice-openai-tts",
-				manifest.configSchema,
-			);
 			ctx.log.info(
 				`OpenAI TTS provider registered (model: ${config.model ?? DEFAULT_CONFIG.model}, voice: ${config.voice ?? DEFAULT_CONFIG.voice})`,
 			);

@@ -67,6 +67,15 @@ describe("plugin init", () => {
 		);
 	});
 
+	it("registers config schema on init", async () => {
+		const ctx = mockCtx({ apiKey: "sk-test-key" });
+		await plugin.init?.(ctx as never);
+		expect(ctx.registerConfigSchema).toHaveBeenCalledWith(
+			"@wopr-network/wopr-plugin-voice-openai-tts",
+			expect.objectContaining({ title: "OpenAI TTS Configuration" }),
+		);
+	});
+
 	it("logs error when API key is missing", async () => {
 		const ctx = mockCtx({});
 		const origEnv = process.env.OPENAI_API_KEY;

@@ -10,9 +10,9 @@ declare module "wopr" {
 	export interface WOPRPluginContext {
 		getConfig<T = Record<string, unknown>>(): T;
 		registerTTSProvider(provider: unknown): void;
-		registerConfigSchema(pluginName: string, schema: unknown): void;
-		unregisterConfigSchema(pluginName: string): void;
-		unregisterCapabilityProvider(type: string, id: string): void;
+		registerConfigSchema(pluginId: string, schema: unknown): void;
+		unregisterConfigSchema(pluginId: string): void;
+		unregisterCapabilityProvider(capability: string, providerId: string): void;
 		log: {
 			info(msg: string): void;
 			error(msg: string): void;
