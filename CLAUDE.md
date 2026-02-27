@@ -7,8 +7,7 @@ OpenAI TTS (text-to-speech) capability provider for WOPR.
 ```bash
 npm run build     # tsc
 npm run check     # biome check + tsc --noEmit (run before committing)
-npm run format    # biome format --write src/
-npm test          # vitest run
+npm run format    # biome format --write .
 ```
 
 ## Key Details
