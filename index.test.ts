@@ -1,3 +1,4 @@
+import type { ConfigField } from "@wopr-network/plugin-types";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import plugin from "./index.js";
 
@@ -39,7 +40,7 @@ describe("plugin manifest", () => {
 	});
 
 	it("manifest configSchema has apiKey field with secret and setupFlow", () => {
-		const fields = plugin.manifest?.configSchema?.fields ?? [];
+		const fields: ConfigField[] = plugin.manifest?.configSchema?.fields ?? [];
 		const apiKeyField = fields.find((f) => f.name === "apiKey");
 		expect(apiKeyField).toBeDefined();
 		expect(apiKeyField?.secret).toBe(true);
