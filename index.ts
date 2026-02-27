@@ -13,6 +13,7 @@
  * ```
  */
 
+import type { PluginManifest } from "@wopr-network/plugin-types";
 import type { WOPRPlugin, WOPRPluginContext } from "wopr";
 import type {
 	AudioFormat,
@@ -272,19 +273,99 @@ class OpenAITTSProvider implements TTSProvider {
 // =============================================================================
 
 let provider: OpenAITTSProvider | null = null;
+let pluginCtx: WOPRPluginContext | null = null;
+
+const manifest: PluginManifest = {
+	name: "@wopr-network/wopr-plugin-voice-openai-tts",
+	version: "1.0.0",
+	description: "OpenAI Text-to-Speech provider for WOPR",
+	homepage: "https://platform.openai.com/docs/guides/text-to-speech",
+	capabilities: ["tts"],
+	category: "voice",
+	tags: ["tts", "openai", "voice", "speech"],
+	icon: "🔊",
+	provides: {
+		capabilities: [
+			{
+				type: "tts",
+				id: "openai-tts",
+				displayName: "OpenAI TTS",
+			},
+		],
+	},
+	configSchema: {
+		title: "OpenAI TTS Configuration",
+		fields: [
+			{
+				name: "apiKey",
+				type: "password",
+				label: "OpenAI API Key",
+				description: "Your OpenAI API key",
+				secret: true,
+				required: true,
+				setupFlow: "paste",
+			},
+			{
+				name: "model",
+				type: "text",
+				label: "TTS Model",
+				description:
+					"TTS model: gpt-4o-mini-tts (recommended), tts-1, tts-1-hd",
+				required: false,
+				setupFlow: "none",
+			},
+			{
+				name: "voice",
+				type: "text",
+				label: "Default Voice",
+				description: "Default voice (alloy, ash, coral, echo, fable, etc.)",
+				required: false,
+				setupFlow: "none",
+			},
+			{
+				name: "speed",
+				type: "number",
+				label: "Speed",
+				description: "Speed multiplier (0.25 - 4.0)",
+				required: false,
+				setupFlow: "none",
+			},
+			{
+				name: "instructions",
+				type: "text",
+				label: "Style Instructions",
+				description: "Style instructions (only for gpt-4o-mini-tts)",
+				required: false,
+				setupFlow: "none",
+			},
+		],
+	},
+	requires: {
+		env: ["OPENAI_API_KEY"],
+	},
+	lifecycle: {
+		shutdownBehavior: "graceful",
+	},
+};
 
 const plugin: WOPRPlugin = {
 	name: "voice-openai-tts",
 	version: "1.0.0",
 	description: "OpenAI Text-to-Speech provider",
+	manifest,
 
 	async init(ctx: WOPRPluginContext) {
+		pluginCtx = ctx;
 		const config = ctx.getConfig<OpenAITTSConfig>();
 		provider = new OpenAITTSProvider(config);
 
 		try {
 			provider.validateConfig();
 			ctx.registerTTSProvider(provider);
+			ctx.registerConfigSchema(
+				"@wopr-network/wopr-plugin-voice-openai-tts",
+				manifest.configSchema,
+			);
 			ctx.log.info(
 				`OpenAI TTS provider registered (model: ${config.model ?? DEFAULT_CONFIG.model}, voice: ${config.voice ?? DEFAULT_CONFIG.voice})`,
 			);
@@ -294,7 +375,12 @@ const plugin: WOPRPlugin = {
 	},
 
 	async shutdown() {
+		pluginCtx?.unregisterCapabilityProvider("tts", "openai-tts");
+		pluginCtx?.unregisterConfigSchema(
+			"@wopr-network/wopr-plugin-voice-openai-tts",
+		);
 		provider = null;
+		pluginCtx = null;
 	},
 };
 

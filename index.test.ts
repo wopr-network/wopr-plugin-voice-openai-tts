@@ -1,3 +1,4 @@
+import type { ConfigField } from "@wopr-network/plugin-types";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import plugin from "./index.js";
 
@@ -5,7 +6,9 @@ function mockCtx(config: Record<string, unknown> = {}) {
 	return {
 		getConfig: vi.fn().mockReturnValue(config),
 		registerTTSProvider: vi.fn(),
-		unregisterExtension: vi.fn(),
+		registerConfigSchema: vi.fn(),
+		unregisterConfigSchema: vi.fn(),
+		unregisterCapabilityProvider: vi.fn(),
 		log: {
 			info: vi.fn(),
 			error: vi.fn(),
@@ -39,7 +42,7 @@ describe("plugin manifest", () => {
 	});
 
 	it("manifest configSchema has apiKey field with secret and setupFlow", () => {
-		const fields = plugin.manifest?.configSchema?.fields ?? [];
+		const fields: ConfigField[] = plugin.manifest?.configSchema?.fields ?? [];
 		const apiKeyField = fields.find((f) => f.name === "apiKey");
 		expect(apiKeyField).toBeDefined();
 		expect(apiKeyField?.secret).toBe(true);
@@ -95,11 +98,14 @@ describe("plugin shutdown", () => {
 		await expect(plugin.shutdown?.()).resolves.not.toThrow();
 	});
 
-	it("calls unregisterExtension on shutdown", async () => {
+	it("calls unregisterCapabilityProvider on shutdown", async () => {
 		const ctx = mockCtx({ apiKey: "sk-test-key" });
 		await plugin.init?.(ctx as never);
 		await plugin.shutdown?.();
-		expect(ctx.unregisterExtension).toHaveBeenCalledWith("tts");
+		expect(ctx.unregisterCapabilityProvider).toHaveBeenCalledWith(
+			"tts",
+			"openai-tts",
+		);
 	});
 });
 
