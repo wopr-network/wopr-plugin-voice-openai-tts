@@ -6,7 +6,8 @@
     "typescript": "^5.3.0",
     "vitest": "^3.0.0"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "name": "@wopr-network/wopr-plugin-voice-openai-tts",
   "scripts": {
     "build": "tsc",
