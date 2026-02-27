@@ -19,21 +19,21 @@ declare module "wopr" {
 		};
 		[key: string]: unknown;
 	}
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: intentional stub for unavailable peer dep
 	export type WOPRPlugin = any;
 }
 
 declare module "wopr/voice" {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: intentional stub for unavailable peer dep
 	export type TTSProvider = any;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: intentional stub for unavailable peer dep
 	export type TTSOptions = any;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: intentional stub for unavailable peer dep
 	export type TTSSynthesisResult = any;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: intentional stub for unavailable peer dep
 	export type Voice = any;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: intentional stub for unavailable peer dep
 	export type VoicePluginMetadata = any;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: intentional stub for unavailable peer dep
 	export type AudioFormat = any;
 }
