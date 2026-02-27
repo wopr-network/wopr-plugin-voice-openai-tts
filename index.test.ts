@@ -6,7 +6,9 @@ function mockCtx(config: Record<string, unknown> = {}) {
 	return {
 		getConfig: vi.fn().mockReturnValue(config),
 		registerTTSProvider: vi.fn(),
-		unregisterExtension: vi.fn(),
+		registerConfigSchema: vi.fn(),
+		unregisterConfigSchema: vi.fn(),
+		unregisterCapabilityProvider: vi.fn(),
 		log: {
 			info: vi.fn(),
 			error: vi.fn(),
@@ -96,11 +98,14 @@ describe("plugin shutdown", () => {
 		await expect(plugin.shutdown?.()).resolves.not.toThrow();
 	});
 
-	it("calls unregisterExtension on shutdown", async () => {
+	it("calls unregisterCapabilityProvider on shutdown", async () => {
 		const ctx = mockCtx({ apiKey: "sk-test-key" });
 		await plugin.init?.(ctx as never);
 		await plugin.shutdown?.();
-		expect(ctx.unregisterExtension).toHaveBeenCalledWith("tts");
+		expect(ctx.unregisterCapabilityProvider).toHaveBeenCalledWith(
+			"tts",
+			"openai-tts",
+		);
 	});
 });
 

@@ -312,6 +312,7 @@ const manifest: PluginManifest = {
 				description:
 					"TTS model: gpt-4o-mini-tts (recommended), tts-1, tts-1-hd",
 				required: false,
+				setupFlow: "none",
 			},
 			{
 				name: "voice",
@@ -319,6 +320,7 @@ const manifest: PluginManifest = {
 				label: "Default Voice",
 				description: "Default voice (alloy, ash, coral, echo, fable, etc.)",
 				required: false,
+				setupFlow: "none",
 			},
 			{
 				name: "speed",
@@ -326,6 +328,7 @@ const manifest: PluginManifest = {
 				label: "Speed",
 				description: "Speed multiplier (0.25 - 4.0)",
 				required: false,
+				setupFlow: "none",
 			},
 			{
 				name: "instructions",
@@ -333,11 +336,15 @@ const manifest: PluginManifest = {
 				label: "Style Instructions",
 				description: "Style instructions (only for gpt-4o-mini-tts)",
 				required: false,
+				setupFlow: "none",
 			},
 		],
 	},
 	requires: {
 		env: ["OPENAI_API_KEY"],
+	},
+	lifecycle: {
+		shutdownBehavior: "graceful",
 	},
 };
 
@@ -355,6 +362,10 @@ const plugin: WOPRPlugin = {
 		try {
 			provider.validateConfig();
 			ctx.registerTTSProvider(provider);
+			ctx.registerConfigSchema(
+				"@wopr-network/wopr-plugin-voice-openai-tts",
+				manifest.configSchema,
+			);
 			ctx.log.info(
 				`OpenAI TTS provider registered (model: ${config.model ?? DEFAULT_CONFIG.model}, voice: ${config.voice ?? DEFAULT_CONFIG.voice})`,
 			);
@@ -364,7 +375,10 @@ const plugin: WOPRPlugin = {
 	},
 
 	async shutdown() {
-		pluginCtx?.unregisterExtension("tts");
+		pluginCtx?.unregisterCapabilityProvider("tts", "openai-tts");
+		pluginCtx?.unregisterConfigSchema(
+			"@wopr-network/wopr-plugin-voice-openai-tts",
+		);
 		provider = null;
 		pluginCtx = null;
 	},
