@@ -1,50 +1,51 @@
 {
-  "description": "OpenAI TTS provider for WOPR voice",
-  "devDependencies": {
-    "@biomejs/biome": "^2.4.3",
-    "@types/node": "^25.2.3",
-    "typescript": "^5.3.0",
-    "vitest": "^3.0.0"
-  },
-  "main": "index.js",
-  "name": "@wopr-network/wopr-plugin-voice-openai-tts",
-  "scripts": {
-    "build": "tsc",
-    "check": "biome check *.ts && tsc --noEmit",
-    "dev": "tsc -w",
-    "format": "biome format --write *.ts",
-    "lint": "biome check *.ts",
-    "lint:fix": "biome check --fix *.ts",
-    "prepublishOnly": "npm run build",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit"
-  },
-  "type": "module",
-  "version": "1.0.0",
-  "wopr": {
-    "plugin": {
-      "category": "voice",
-      "description": "OpenAI Text-to-Speech",
-      "name": "voice-openai-tts",
-      "primaryEnv": "OPENAI_API_KEY",
-      "requires": {
-        "env": [
-          "OPENAI_API_KEY"
-        ]
-      },
-      "type": "tts"
-    }
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "files": [
-    "dist"
-  ],
-  "release": {
-    "extends": "@wopr-network/semantic-release-config"
-  },
-  "dependencies": {
-    "@wopr-network/plugin-types": "^0.2.1"
-  }
+	"description": "OpenAI TTS provider for WOPR voice",
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.14",
+		"@types/node": "^20.10.0",
+		"typescript": "^5.3.0",
+		"vitest": "^3.0.0"
+	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"name": "@wopr-network/wopr-plugin-voice-openai-tts",
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "tsc",
+		"check": "biome check . && tsc --noEmit",
+		"dev": "tsc -w",
+		"format": "biome format --write .",
+		"lint": "biome check .",
+		"lint:fix": "biome check --fix .",
+		"prepublishOnly": "npm run build",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit"
+	},
+	"type": "module",
+	"version": "1.0.0",
+	"wopr": {
+		"plugin": {
+			"category": "voice",
+			"description": "OpenAI Text-to-Speech",
+			"name": "voice-openai-tts",
+			"primaryEnv": "OPENAI_API_KEY",
+			"requires": {
+				"env": [
+					"OPENAI_API_KEY"
+				]
+			},
+			"type": "tts"
+		}
+	},
+	"release": {
+		"extends": "@wopr-network/semantic-release-config"
+	},
+	"dependencies": {
+		"@wopr-network/plugin-types": "^0.2.1"
+	}
 }
