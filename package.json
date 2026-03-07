@@ -1,7 +1,7 @@
 {
 	"description": "OpenAI TTS provider for WOPR voice",
 	"devDependencies": {
-		"@biomejs/biome": "^2.4.4",
+		"@biomejs/biome": "^2.4.6",
 		"@types/node": "^25.3.5",
 		"typescript": "^5.3.0",
 		"vitest": "^4.0.18"
